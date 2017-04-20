@@ -10,8 +10,11 @@ Rails.application.routes.draw do
     member do
       get :followings
       get :followers
+      get :starings
     end
   end
+  
   resources :microposts, only: [:create, :destroy]
   resources :relationships, only: [:create, :destroy]
+  resources :favos, only: [:create, :destroy]
 end

@@ -5,12 +5,16 @@ class User < ApplicationRecord
     format: { with: /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i },
     uniqueness: { case_sensitive: false }
   has_secure_password
+  
+  
   has_many :microposts
   has_many :relationships
   has_many :followings, through: :relationships, source: :follow
   has_many :reverses_of_relationship, class_name: 'Relationship', foreign_key: 'follow_id'
   has_many :followers, through: :reverses_of_relationship, source: :user
- 
+  has_many :favos
+  has_many :starings, through: :favos, source: :starr
+  
   def follow(other_user)
     unless self == other_user
       self.relationships.find_or_create_by(follow_id: other_user.id)
@@ -25,4 +29,22 @@ class User < ApplicationRecord
   def following?(other_user)
     self.followings.include?(other_user)
   end
+  
+  def feed_microposts
+    Micropost.where(user_id: self.following_ids + [self.id])
+  end
+  
+  
+  def star(micropost)
+    self.favos.find_or_create_by(starr_id: micropost.id)
+  end
+
+  def unstar(micropost)
+    favo = self.favos.find_by(starr_id: micropost.id)
+    favo.destroy if favo
+  end
+
+  def staring?(micropost)
+    self.starings.include?(micropost)
+  end  
 end

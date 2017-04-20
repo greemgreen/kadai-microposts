@@ -1,0 +1,11 @@
+<% if current_user.staring?(micropost) %>
+  <%= form_for(current_user.favos.find_by(starr_id: micropost.id), html: { method: :delete }) do |f| %>
+    <%= hidden_field_tag :starr_id, micropost.id %>
+    <%= f.submit 'Unstar', class: 'btn btn-success btn-xs' %>
+  <% end %>
+<% else %>
+  <%= form_for(current_user.favos.build) do |f| %>
+    <%= hidden_field_tag :starr_id, micropost.id %>
+    <%= f.submit 'Star', class: 'btn btn-warning btn-xs' %>
+  <% end %>
+<% end %>

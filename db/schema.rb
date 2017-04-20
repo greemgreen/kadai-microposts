@@ -10,7 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170419051758) do
+ActiveRecord::Schema.define(version: 20170420000706) do
+
+  create_table "favorites", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.string   "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "content"], name: "index_favorites_on_user_id_and_content", unique: true, using: :btree
+    t.index ["user_id"], name: "index_favorites_on_user_id", using: :btree
+  end
+
+  create_table "favos", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "starr_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["starr_id"], name: "index_favos_on_starr_id", using: :btree
+    t.index ["user_id", "starr_id"], name: "index_favos_on_user_id_and_starr_id", unique: true, using: :btree
+    t.index ["user_id"], name: "index_favos_on_user_id", using: :btree
+  end
 
   create_table "microposts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "content"
@@ -38,6 +57,9 @@ ActiveRecord::Schema.define(version: 20170419051758) do
     t.datetime "updated_at",      null: false
   end
 
+  add_foreign_key "favorites", "users"
+  add_foreign_key "favos", "microposts", column: "starr_id"
+  add_foreign_key "favos", "users"
   add_foreign_key "microposts", "users"
   add_foreign_key "relationships", "users"
   add_foreign_key "relationships", "users", column: "follow_id"
